@@ -1133,6 +1133,7 @@ class MultimodalGenerativeCVAE(object):
                                                               most_likely_z=z_mode,
                                                               full_dist=full_dist,
                                                               all_z_sep=all_z_sep)
+        
 
         _, our_sampled_future = self.p_y_xz(mode, x, x_nr_t, y_r, n_s_t0, z,
                                             prediction_horizon,

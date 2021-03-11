@@ -403,13 +403,18 @@ def process_data(data_path, version, output_path, val_split):
     splits = create_splits_scenes()
     train_scenes, val_scenes = train_test_split(splits['train' if 'mini' not in version else 'mini_train'], test_size=val_split)
     train_scene_names = splits['train' if 'mini' not in version else 'mini_train']
-    val_scene_names = []#val_scenes
+    val_scene_names = val_scenes
     test_scene_names = splits['val' if 'mini' not in version else 'mini_val']
 
     ns_scene_names = dict()
     ns_scene_names['train'] = train_scene_names
     ns_scene_names['val'] = val_scene_names
     ns_scene_names['test'] = test_scene_names
+    
+    ##
+    # running out of memory when preprocessing the entire train set 
+    ns_scene_names['train'] = ns_scene_names['train'][:400]
+    ##
 
     for data_class in ['train', 'val', 'test']:
         env = Environment(node_type_list=['VEHICLE', 'PEDESTRIAN'], standardization=standardization)
@@ -447,6 +452,7 @@ def process_data(data_path, version, output_path, val_split):
             if 'mini' in version:
                 mini_string = '_mini'
             data_dict_path = os.path.join(output_path, 'nuScenes_' + data_class + mini_string + '_full.pkl')
+            os.makedirs(os.path.dirname(data_dict_path), exist_ok=True)
             with open(data_dict_path, 'wb') as f:
                 dill.dump(env, f, protocol=dill.HIGHEST_PROTOCOL)
             print('Saved Environment!')
