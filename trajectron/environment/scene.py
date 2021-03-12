@@ -6,6 +6,24 @@ from .node import MultiNode
 
 class Scene(object):
     def __init__(self, timesteps, map=None, dt=1, name="", frequency_multiplier=1, aug_func=None,  non_aug_scene=None):
+        
+        ####
+        ## map data for plotting
+        self.ego_initx = None
+        self.ego_inity = None
+        self.x_min = None
+        self.y_min = None
+        self.x_max = None
+        self.y_max = None
+        self.x_size = None
+        self.y_size = None
+        self.patch_box   = None
+        self.patch_angle = None
+        self.canvas_size = None
+        self.homography  = None
+        self.layer_names = None
+        ####
+        
         self.map = map
         self.timesteps = timesteps
         self.dt = dt

@@ -184,6 +184,9 @@ def process_scene(ns_scene, env, nusc, data_path):
     sample_token = ns_scene['first_sample_token']
     sample = nusc.get('sample', sample_token)
     frame_id = 0
+    ego_initx = None
+    ego_inity = None
+
     while sample['next']:
         annotation_tokens = sample['anns']
         for annotation_token in annotation_tokens:
@@ -231,6 +234,9 @@ def process_scene(ns_scene, env, nusc, data_path):
                                 'heading': Quaternion(annotation['rotation']).yaw_pitch_roll[0],
                                 'orientation': None})
         data = data.append(data_point, ignore_index=True)
+        if frame_id == 1:
+            ego_initx = annotation['translation'][0]
+            ego_inity = annotation['translation'][1]
 
         sample = nusc.get('sample', sample['next'])
         frame_id += 1
@@ -250,6 +256,12 @@ def process_scene(ns_scene, env, nusc, data_path):
     data['y'] = data['y'] - y_min
 
     scene = Scene(timesteps=max_timesteps + 1, dt=dt, name=str(scene_id), aug_func=augment)
+    scene.ego_initx = ego_initx
+    scene.ego_inity = ego_inity
+    scene.x_min = x_min
+    scene.y_min = y_min
+    scene.x_max = x_max
+    scene.y_max = y_max
 
     # Generate Maps
     map_name = nusc.get('log', ns_scene['log_token'])['location']
@@ -258,12 +270,24 @@ def process_scene(ns_scene, env, nusc, data_path):
     type_map = dict()
     x_size = x_max - x_min
     y_size = y_max - y_min
+
+    scene.map_name = map_name
+    scene.x_size = x_size
+    scene.y_size = y_size
+
     patch_box = (x_min + 0.5 * (x_max - x_min), y_min + 0.5 * (y_max - y_min), y_size, x_size)
     patch_angle = 0  # Default orientation where North is up
     canvas_size = (np.round(3 * y_size).astype(int), np.round(3 * x_size).astype(int))
     homography = np.array([[3., 0., 0.], [0., 3., 0.], [0., 0., 3.]])
     layer_names = ['lane', 'road_segment', 'drivable_area', 'road_divider', 'lane_divider', 'stop_line',
                    'ped_crossing', 'stop_line', 'ped_crossing', 'walkway']
+
+    scene.patch_box = patch_box
+    scene.patch_angle = patch_angle
+    scene.canvas_size = canvas_size
+    scene.homography = homography
+    scene.layer_names = layer_names
+    
     map_mask = (nusc_map.get_map_mask(patch_box, patch_angle, layer_names, canvas_size) * 255.0).astype(
         np.uint8)
     map_mask = np.swapaxes(map_mask, 1, 2)  # x axis comes first
