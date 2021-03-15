@@ -46,8 +46,8 @@ eval_stg, hyp = load_model(
 
 ph = 6
 num_samples = 100
-# ptype = '_all_z_sep'
 ptype = ''
+# ptype = '_full_dist'
 viewport_hw = 60
 
 def plot_scene_timestep(scene, t):
