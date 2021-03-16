@@ -1,0 +1,11 @@
+## packages to must be installed without --no-index
+## call `module load ipython-kernel/3.6`
+
+# Trajectron++
+pyquaternion==0.9.5
+ncls==0.0.51
+
+# nuScenes
+descartes
+fire
+motmetrics<=1.1.3

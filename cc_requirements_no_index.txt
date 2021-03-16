@@ -1,0 +1,46 @@
+# install these first
+# call `module load python/3.6` and then create a virtualenv
+# install using --no-index option to only use compute canada wheels
+# installing packages specifically using computecanada provided
+# wheel versions
+
+## Trajectron++
+numpy==1.16.3
+scipy==1.3.2
+pandas==0.25.3
+dill==0.3.1.1
+pytest==5.3.5
+# tqdm==4.45.* does not exist
+tqdm==4.46.0
+scikit-learn==0.22.1
+# opencv-python==4.1.* does not exist.
+opencv-python==3.4.4.19
+matplotlib
+seaborn==0.9.0
+notebook==6.0.3
+# orjson==2.* does not exist
+orjson==3.5.0
+torch==1.4.0
+tensorboard==1.14.0
+tensorboardX==1.8
+# ignoring for now
+#tensorflow==1.14.0
+# ignoring for now
+#tensorflow-estimator==1.14.0
+
+# cannot install nuscenes-devkit
+# nuscenes-devkit needs additionally
+# Shapely
+# motmetrics
+# Pillow
+# descartes
+# jupyter
+# fire
+# pyquaternion
+# cachetools
+
+## NuScenes
+cachetools
+Shapely
+jupyter
+
