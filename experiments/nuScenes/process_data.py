@@ -434,11 +434,6 @@ def process_data(data_path, version, output_path, val_split):
     ns_scene_names['train'] = train_scene_names
     ns_scene_names['val'] = val_scene_names
     ns_scene_names['test'] = test_scene_names
-    
-    ##
-    # running out of memory when preprocessing the entire train set 
-    ns_scene_names['train'] = ns_scene_names['train'][:400]
-    ##
 
     for data_class in ['train', 'val', 'test']:
         env = Environment(node_type_list=['VEHICLE', 'PEDESTRIAN'], standardization=standardization)

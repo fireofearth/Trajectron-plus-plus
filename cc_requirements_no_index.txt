@@ -17,7 +17,8 @@ scikit-learn==0.22.1
 opencv-python==3.4.4.19
 matplotlib
 seaborn==0.9.0
-notebook==6.0.3
+# don't install notebook==6.0.3, instead do
+# `module load ipython-kernel/3.6`
 # orjson==2.* does not exist
 orjson==3.5.0
 torch==1.4.0
@@ -28,7 +29,6 @@ tensorboardX==1.8
 # ignoring for now
 #tensorflow-estimator==1.14.0
 
-# cannot install nuscenes-devkit
 # nuscenes-devkit needs additionally
 # Shapely
 # motmetrics
@@ -39,8 +39,10 @@ tensorboardX==1.8
 # pyquaternion
 # cachetools
 
-## NuScenes
+## nuscenes-devkit
 cachetools
+# shapely needs the geos module
+# module load geos
 Shapely
-jupyter
-
+# don't install jupyter, instead do
+# `module load ipython-kernel/3.6`

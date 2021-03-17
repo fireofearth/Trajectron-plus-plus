@@ -9,3 +9,9 @@ ncls==0.0.51
 descartes
 fire
 motmetrics<=1.1.3
+
+# I realized that I needed this, and not the submodule after the fact
+# so may not need to install nuScenes dependencies
+# it requires:
+# scikit-learn, fire, Shapely, motmetrics, cachetools, jupyter, numpy, tqdm, pyquaternion, pandas, descartes, scipy, Pillow, matplotlib, opencv-python
+nuscenes-devkit==1.0.6
