@@ -8,6 +8,7 @@ import numpy as np
 import torch
 import dill
 import json
+import argparse
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.ticker as ticker
@@ -30,17 +31,13 @@ NCOLORS = len(AGENT_COLORS)
 AGENT_COLORS = np.array(AGENT_COLORS) \
         .take([(i * 3) % NCOLORS for i in range(NCOLORS)], 0)
 
-# Load nuScenes SDK
-nuScenes_data_path = "/home/fireofearth/code/robotics/trajectron-plus-plus/experiments/nuScenes/v1.0"
 # Data Path to nuScenes data set
 nuScenes_devkit_path = './devkit/python-sdk/'
 sys.path.append(nuScenes_devkit_path)
-from nuscenes.map_expansion.map_api import NuScenesMap
-nusc_map = NuScenesMap(dataroot=nuScenes_data_path, map_name='boston-seaport')
 
 
 class TrajectronPlotter(object):
-    def __init__(self):
+    def __init__(self, args):
         # ph : int
         #    Prediction horizon
         self.ph = 6
@@ -49,16 +46,18 @@ class TrajectronPlotter(object):
         self.num_samples = 500
         self.dpi = 180
 
+        # Load nuScenes SDK
+        from nuscenes.map_expansion.map_api import NuScenesMap
+        self.nusc_map = NuScenesMap(dataroot=args.map_path, map_name='boston-seaport')
+
         ## Load dataset
-        with open('../processed/nuScenes_test_full.pkl', 'rb') as f:
+        with open(args.data_path, 'rb') as f:
             eval_env = dill.load(f, encoding='latin1')
         self.eval_scenes = eval_env.scenes
 
         ## Load model
-        log_dir = './models'
-        model_dir = os.path.join(log_dir, 'int_ee_me')
         self.eval_stg, hyp = load_model(
-            model_dir, eval_env, ts=12)
+            args.model_dir, eval_env, ts=12)
 
         ## To select specific scenes to plot
         # scenes_to_use = ['329']
@@ -207,7 +206,6 @@ class TrajectronPlotter(object):
         nodes : list of Node
             List of vehicle nodes
         """
-        global nusc_map
         timesteps = np.array([t])
 
         # when using generate_vehicle_latents() then all nodes are already vehicle nodes
@@ -226,9 +224,9 @@ class TrajectronPlotter(object):
         center = minpos + ego_lastpos
         my_patch = (center[0] - self.viewport_hw, center[1] - self.viewport_hw,
                     center[0] + self.viewport_hw, center[1] + self.viewport_hw)
-        if scene.map_name != nusc_map.map_name:
-            nusc_map = NuScenesMap(dataroot=nuScenes_data_path, map_name=scene.map_name)
-        fig, ax = nusc_map.render_map_patch(my_patch, scene.layer_names,
+        if scene.map_name != self.nusc_map.map_name:
+            self.nusc_map = NuScenesMap(dataroot=nuScenes_data_path, map_name=scene.map_name)
+        fig, ax = self.nusc_map.render_map_patch(my_patch, scene.layer_names,
                 figsize=(10, 10), alpha=0.2, render_egoposes_range=False)
         
         for idx, node in enumerate(nodes):
@@ -418,5 +416,15 @@ class TrajectronPlotter(object):
                     self.plot_each_latents(scene, t,
                             z, zz, predictions, nodes, predictions_dict, histories_dict, futures_dict)
 
-plotter = TrajectronPlotter()
-plotter.run()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--map_path", type=str,
+            default="/scratch/cchen795/nuScenes/v1.0")
+    parser.add_argument("--data_path", type=str,
+            default="/scratch/cchen795/nuScenes/processed/nuScenes_test_full.pkl")
+    parser.add_argument("--model_dir", type=str,
+            default="/home/cchen795/scratch/code/trajectron-plus-plus/experiments/nuScenes/models/int_ee_me")
+    args = parser.parse_args()
+
+    plotter = TrajectronPlotter(args)
+    plotter.run()

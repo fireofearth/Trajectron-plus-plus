@@ -30,4 +30,4 @@ echo "start process_data"
 python $APPDIR/process_data.py \
 	--data=$SCRATCH/nuScenes/v1.0 \
 	--version="v1.0-trainval" \
-	--output_path=$SCRATCH/nuScenes/processsed
+	--output_path=$SCRATCH/nuScenes/processed

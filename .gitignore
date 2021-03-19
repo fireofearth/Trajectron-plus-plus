@@ -6,9 +6,7 @@ public-code/
 # outputs
 experiments/nuScenes/plots/
 experiments/nuScenes/results/
-experiments/nuScenes/models/models_02_Mar_2021_17_44_10_vel_ee/
-experiments/nuScenes/models/models_02_Mar_2021_22_37_40_int_ee/
-experiments/nuScenes/models/models_25_Feb_2021_16_15_46_robot/
+experiments/nuScenes/models/models_*/
 
 backup.*/
 
