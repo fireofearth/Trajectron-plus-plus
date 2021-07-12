@@ -24,8 +24,8 @@ cars = [plt.imread('icons/Car TOP_VIEW 375397.png'),
 robot = plt.imread('icons/Car TOP_VIEW ROBOT.png')
 
 
-def load_model(model_dir, env, ts=3999):
-    model_registrar = ModelRegistrar(model_dir, 'cpu')
+def load_model(model_dir, env, ts=3999, device='cpu'):
+    model_registrar = ModelRegistrar(model_dir, device)
     model_registrar.load_models(ts)
     with open(os.path.join(model_dir, 'config.json'), 'r') as config_json:
         hyperparams = json.load(config_json)
@@ -34,7 +34,7 @@ def load_model(model_dir, env, ts=3999):
     if 'incl_robot_node' not in hyperparams:
         hyperparams['incl_robot_node'] = False
 
-    stg = Trajectron(model_registrar, hyperparams,  None, 'cpu')
+    stg = Trajectron(model_registrar, hyperparams,  None, device)
 
     stg.set_environment(env)
 
